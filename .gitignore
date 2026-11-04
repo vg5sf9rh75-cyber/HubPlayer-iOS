@@ -1,0 +1,21 @@
+# Xcode / 构建产物
+build/
+DerivedData/
+*.xcuserdata
+*.xcworkspace/xcuserdata
+HubPlayer.xcodeproj/xcuserdata
+
+# 临时文件
+tools/_tmp/
+tools/__pycache__/
+__pycache__/
+.DS_Store
+*.swp
+
+# 逆向分析产物 / Android 构建
+tools/_tmp/
+tools/__pycache__/
+HubRelay/.gradle/
+HubRelay/build/
+HubRelay/app/build/
+HubRelay/local.properties
