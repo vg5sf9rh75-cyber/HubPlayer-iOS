@@ -126,10 +126,15 @@ final class TVBoxStore: ObservableObject {
             let cfg = try await relay.fetchConfig()
             config = cfg
             liveSources = cfg.lives
-            if currentSite == nil {
-                currentSite = cfg.sites.first { !$0.isCsp } ?? cfg.sites.first
+            let usable = cfg.sites.filter { !$0.isCsp }
+            if currentSite == nil || currentSite?.isCsp == true {
+                currentSite = usable.first
             }
-            if let s = currentSite { await loadSite(s) }
+            if let s = currentSite {
+                await loadSite(s)
+            } else if !cfg.sites.isEmpty {
+                error = "配置里的 \(cfg.sites.count) 个站点全部是 csp_ 安卓 DEX 插件，单机版没有 Dalvik/JNI 运行时，无法执行。请到「设置」添加 CMS / JSON 采集站点，或点「载入演示站点」先验证播放链路。"
+            }
         } catch {
             configError = error.localizedDescription
         }
@@ -271,16 +276,28 @@ final class TVBoxStore: ObservableObject {
 
     // MARK: - 详情 / 播放
 
-    func loadDetail(id: String, site: TVBoxSite? = nil) async {
+    func loadDetail(id: String, site: TVBoxSite? = nil, fallback: VodItem? = nil) async {
         let s = site ?? currentSite
         guard let s else { return }
         isLoadingDetail = true
         detailError = nil
         defer { isLoadingDetail = false }
         do {
-            detail = try await relay.detailContent(api: s.api, ext: s.ext?.text ?? "", id: id)
-            if detail == nil { detailError = "该源未返回详情" }
-        } catch { detailError = error.localizedDescription }
+            let d = try await relay.detailContent(api: s.api, ext: s.ext?.text ?? "", id: id)
+            if let d, d.playGroups.contains(where: { !$0.isEmpty }) {
+                detail = d
+            } else if let fb = fallback, !fb.playGroups.isEmpty {
+                // 多数 CMS 的详情接口不返回选集，列表项里其实已经带了
+                detail = fb
+            } else {
+                detail = d ?? fallback
+                detailError = "该源未返回可播放选集（vod_play_url 为空）"
+            }
+        } catch {
+            detailError = error.localizedDescription
+            // 详情接口失败但列表项自带选集时，仍允许直接播放
+            if let fb = fallback, !fb.playGroups.isEmpty { detail = fb }
+        }
     }
 
     /// 解析选集为可播放地址：优先 playerContent，失败则用 parses 解析接口
@@ -288,23 +305,33 @@ final class TVBoxStore: ObservableObject {
         var result = try await relay.playerContent(api: site.api, ext: site.ext?.text ?? "",
                                                     flag: flag, id: value)
         var target = result.url.isEmpty ? value : result.url
-
-        // parse=1 表示需要走解析接口
-        if result.parse == 1 || result.jx == 1 || (!target.hasPrefix("http") && !target.contains("://")) {
-            if let p = parses.first {
-                target = try await relay.parse(parseURL: p.url, target: target)
+        let needParse = result.parse == 1 || result.jx == 1 || !isPlayable(target)
+        if needParse {
+            guard let p = parses.first else {
+                throw RelayError.unsupported(
+                    "播放地址不是直链（\(String(target.prefix(80)))）。该源需要解析接口：请在配置的 parses 里加解析服务，或换用直接返回 m3u8/mp4 的 CMS 源。")
             }
+            target = try await relay.parse(parseURL: p.url, target: target)
         }
         // 相对地址补全
-        if !target.hasPrefix("http") && !target.contains("://"),
-           let ext = site.ext?.text, let base = URL(string: ext), let u = URL(string: target, relativeTo: base) {
+        if !isPlayable(target),
+           let ext = site.ext?.text, let base = URL(string: ext),
+           let u = URL(string: target, relativeTo: base) {
             target = u.absoluteString
         }
-        guard let url = URL(string: target) else { throw RelayError.decode("播放地址无效：\(target)") }
+        guard isPlayable(target), let url = URL(string: target) else {
+            throw RelayError.decode("播放地址无效或不是可播放直链：\(String(target.prefix(120)))")
+        }
         var h = result.headers
         for (k, v) in headers(for: target) where h[k] == nil { h[k] = v }
         result.url = target
         return (url, h, result.contentType)
+    }
+
+    private func isPlayable(_ s: String) -> Bool {
+        let t = s.lowercased()
+        return t.hasPrefix("http://") || t.hasPrefix("https://")
+            || t.hasPrefix("rtmp://") || t.hasPrefix("rtsp://")
     }
 
     func record(vod: VodItem, episode: String, site: TVBoxSite) {
