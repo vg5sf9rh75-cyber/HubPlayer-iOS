@@ -222,8 +222,24 @@ struct TVBoxSettingsView: View {
             Form {
                 Section("运行方式") {
                     LabeledContent("模式", value: "单机本地引擎")
-                    Text("不需要第二台设备、不需要中继。配置、站点、直播源全部自行填写；配置里的 csp_ 站点仅保留为占位条目。")
+                    Text("不需要第二台设备。csp_ 站点是安卓 DEX 插件（依赖 Dalvik + ARM .so），iOS 无法执行，只能保留为占位；点播请填苹果CMS v10 / 返回 {list:[...]} 的 JSON 接口，或粘贴 M3U 直链。")
                         .font(.caption2).foregroundStyle(.tertiary)
+                    Button("载入演示站点（验证播放链路）") {
+                        if !customSites.contains(where: { $0["api"] == "hub://demo" }) {
+                            customSites.append([
+                                "key": "demo_local",
+                                "name": "演示站点（可删）",
+                                "type": "0",
+                                "api": "hub://demo",
+                                "ext": ""
+                            ])
+                        }
+                        save()
+                        store.config = nil
+                        store.currentSite = nil
+                        status = "已载入演示站点：首页点海报 → 选集 → 应出现测试画面"
+                        Task { await store.loadConfig(force: true) }
+                    }
                     Button("自检并重新加载") {
                         save()
                         Task {
@@ -321,6 +337,10 @@ struct TVBoxSettingsView: View {
                 }
 
                 Section("状态") {
+                    if let cfg = store.config, cfg.sites.filter({ !$0.isCsp }).isEmpty {
+                        Text("⚠️ 当前 \(cfg.sites.count) 个站点全是 csp_ 安卓 DEX 插件，没有可点播的源。请添加 CMS / JSON 站点，或载入演示站点。")
+                            .font(.caption).foregroundStyle(.orange)
+                    }
                     if let err = store.configError {
                         Text(err).font(.caption).foregroundStyle(.red)
                     } else if store.config != nil {
