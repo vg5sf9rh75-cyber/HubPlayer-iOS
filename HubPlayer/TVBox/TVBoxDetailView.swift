@@ -43,7 +43,7 @@ struct TVBoxDetailView: View {
                 }
             }
         }
-        .task { await store.loadDetail(id: vod.id) }
+        .task { await store.loadDetail(id: vod.id, fallback: vod) }
         .alert("播放失败", isPresented: Binding(get: { playError != nil }, set: { if !$0 { playError = nil } })) {
             Button("好") { playError = nil }
         } message: { Text(playError ?? "") }
@@ -144,6 +144,10 @@ struct TVBoxDetailView: View {
 
     private func play(ep: VodEpisode) async {
         guard let site = store.currentSite else { return }
+        guard !ep.value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            playError = "选集「\(ep.name)」没有播放地址，请换线路或换源"
+            return
+        }
         isResolving = true
         defer { isResolving = false }
         do {
