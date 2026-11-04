@@ -209,18 +209,29 @@ struct VodItem: Identifiable, Hashable {
 
     static func parse(_ dict: [String: Any]) -> VodItem {
         func s(_ k: String) -> String { anyString(dict[k]) ?? "" }
-        let from = s("vod_play_from").components(separatedBy: "$$$").filter { !$0.isEmpty }
-        let urls = s("vod_play_url").components(separatedBy: "$$$")
+        var from = s("vod_play_from").components(separatedBy: "$$$").filter { !$0.isEmpty }
+        var urls = s("vod_play_url").components(separatedBy: "$$$")
+        // 部分源只给 play_url 不给 play_from；补默认线路，避免详情页「暂无选集」
+        if from.isEmpty && !urls.isEmpty { from = ["默认线路"] }
+        if urls.isEmpty { urls = [""] }
         var groups: [[VodEpisode]] = []
         for (i, _) in from.enumerated() {
             let seg = i < urls.count ? urls[i] : ""
-            let eps = seg.components(separatedBy: "#").compactMap { pair -> VodEpisode? in
+            // "#" 是选集分隔符，但地址参数里也可能含 "#"：不含 "$" 的片段拼回上一段
+            var pairs: [String] = []
+            for piece in seg.components(separatedBy: "#") {
+                if pairs.isEmpty || piece.contains("$") { pairs.append(piece) }
+                else { pairs[pairs.count - 1] += "#" + piece }
+            }
+            let eps = pairs.compactMap { pair -> VodEpisode? in
                 let p = pair.components(separatedBy: "$")
-                guard !p.isEmpty else { return nil }
-                let title = p[0].trimmingCharacters(in: .whitespaces)
-                guard !title.isEmpty else { return nil }
-                let value = p.count > 1 ? p[1] : ""
-                return VodEpisode(name: title, value: value)
+                guard let first = p.first else { return nil }
+                let head = first.trimmingCharacters(in: .whitespaces)
+                guard !head.isEmpty else { return nil }
+                // 只有一段时视作纯地址，而不是把地址当集名
+                if p.count == 1 { return VodEpisode(name: "播放", value: head) }
+                let value = p.dropFirst().joined(separator: "$").trimmingCharacters(in: .whitespaces)
+                return VodEpisode(name: head, value: value)
             }
             groups.append(eps)
         }
