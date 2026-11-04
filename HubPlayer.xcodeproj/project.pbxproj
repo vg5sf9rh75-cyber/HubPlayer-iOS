@@ -1,0 +1,298 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXFileReference section */
+		c010000000000000000000ab1 /* TVBoxModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVBoxModels.swift; sourceTree = "<group>"; };
+		c020000000000000000000ab1 /* RelayClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelayClient.swift; sourceTree = "<group>"; };
+		c030000000000000000000ab1 /* TVBoxStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVBoxStore.swift; sourceTree = "<group>"; };
+		c040000000000000000000ab1 /* TVBoxHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVBoxHomeView.swift; sourceTree = "<group>"; };
+		c050000000000000000000ab1 /* TVBoxDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVBoxDetailView.swift; sourceTree = "<group>"; };
+		c060000000000000000000ab1 /* TVBoxMoreViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVBoxMoreViews.swift; sourceTree = "<group>"; };
+		d09ea2531503cea6449923ad /* HubPlayerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPlayerApp.swift; sourceTree = "<group>"; };
+		15d3192d8e33e5e6d4fd0864 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		5d8ab5efdad1787ce0ab0163 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
+		c2316ff308c4c146438765f1 /* PlaylistParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistParser.swift; sourceTree = "<group>"; };
+		97c538b2658cdab62e3cea80 /* PlayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerManager.swift; sourceTree = "<group>"; };
+		ccc16142f5012b38810ad9e5 /* LiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveView.swift; sourceTree = "<group>"; };
+		59ad411a4f68639422344b56 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		1018ad4c75a4420be931c440 /* NetworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkView.swift; sourceTree = "<group>"; };
+		543cf9b24532c6acdef1efce /* WebDavView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebDavView.swift; sourceTree = "<group>"; };
+		c3d4e5f60718293a4b5c6d7e /* QuarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuarkView.swift; sourceTree = "<group>"; };
+		e5f60718293a4b5c6d7e8f91 /* BiliView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiliView.swift; sourceTree = "<group>"; };
+		f60718293a4b5c6d7e8f9a13 /* LoginWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWebView.swift; sourceTree = "<group>"; };
+		80737a240070424caadb5495 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		47a46eb4e5b87bfafb039ed3 /* SourceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceStore.swift; sourceTree = "<group>"; };
+		326671a21d35fed08e081415 /* WebDavManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebDavManager.swift; sourceTree = "<group>"; };
+		a1b2c3d4e5f60718293a4b5c /* QuarkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuarkManager.swift; sourceTree = "<group>"; };
+		cb3707a8555e94c80a37be9b /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8344c37d486858a8fbdfe1c8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		cab4d8786fdf795b6e46ac92 /* HubPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HubPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXBuildFile section */
+		d010000000000000000000cd2 /* TVBoxModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = c010000000000000000000ab1 /* TVBoxModels.swift */; };
+		d020000000000000000000cd2 /* RelayClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = c020000000000000000000ab1 /* RelayClient.swift */; };
+		d030000000000000000000cd2 /* TVBoxStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = c030000000000000000000ab1 /* TVBoxStore.swift */; };
+		d040000000000000000000cd2 /* TVBoxHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = c040000000000000000000ab1 /* TVBoxHomeView.swift */; };
+		d050000000000000000000cd2 /* TVBoxDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = c050000000000000000000ab1 /* TVBoxDetailView.swift */; };
+		d060000000000000000000cd2 /* TVBoxMoreViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = c060000000000000000000ab1 /* TVBoxMoreViews.swift */; };
+		18c5c0b9511ab079774c3de9 /* HubPlayerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = d09ea2531503cea6449923ad /* HubPlayerApp.swift */; };
+		138808d1b5602ac1f42140c9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15d3192d8e33e5e6d4fd0864 /* ContentView.swift */; };
+		e01812badb7efaec5f4b1828 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5d8ab5efdad1787ce0ab0163 /* Channel.swift */; };
+		5979ec868188a68d32fa0370 /* PlaylistParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = c2316ff308c4c146438765f1 /* PlaylistParser.swift */; };
+		de469d8390a8d5c03f2c69d0 /* PlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97c538b2658cdab62e3cea80 /* PlayerManager.swift */; };
+		12768178f2ed5f0709f95f4c /* LiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ccc16142f5012b38810ad9e5 /* LiveView.swift */; };
+		a57b7827ed74a3d9d7da18d0 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59ad411a4f68639422344b56 /* PlayerView.swift */; };
+		96b39969ed2202fbc8c64be1 /* NetworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1018ad4c75a4420be931c440 /* NetworkView.swift */; };
+		1b4c28d28af34d738f0df072 /* WebDavView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543cf9b24532c6acdef1efce /* WebDavView.swift */; };
+		1519d298d814f7680b3c4ee5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80737a240070424caadb5495 /* SettingsView.swift */; };
+		0c1112546e59e5a2374c9c7d /* SourceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47a46eb4e5b87bfafb039ed3 /* SourceStore.swift */; };
+		c1c28a1186aeb7aafba40560 /* WebDavManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326671a21d35fed08e081415 /* WebDavManager.swift */; };
+		b2c3d4e5f60718293a4b5c6d /* QuarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = a1b2c3d4e5f60718293a4b5c /* QuarkManager.swift */; };
+		d4e5f60718293a4b5c6d7e8f /* QuarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = c3d4e5f60718293a4b5c6d7e /* QuarkView.swift */; };
+		e6f60718293a4b5c6d7e8f92 /* BiliView.swift in Sources */ = {isa = PBXBuildFile; fileRef = e5f60718293a4b5c6d7e8f91 /* BiliView.swift */; };
+		f70818293a4b5c6d7e8f9a14 /* LoginWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = f60718293a4b5c6d7e8f9a13 /* LoginWebView.swift */; };
+		3d61738cf881fac649b33772 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = cb3707a8555e94c80a37be9b /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXGroup section */
+		71d2e56247fe75c3dce9b609 = {
+			isa = PBXGroup;
+			children = ( 8ef90b6902ebbdd74b24c767, 30772f61ac9bdc8631745269, d8bd5dd42310cb1693158d7b );
+			sourceTree = "<group>";
+		};
+		8ef90b6902ebbdd74b24c767 /* HubPlayer */ = {
+			isa = PBXGroup;
+			children = ( d09ea2531503cea6449923ad, 15d3192d8e33e5e6d4fd0864, 9cf43b31e8845d861542a38e, 420ceb417186b52ecf642348, c454586a1f4e28c340bdc1ad, 7675693986d84f095b28b67d, cb3707a8555e94c80a37be9b, 8344c37d486858a8fbdfe1c8, e00000000000000000000ab1 );
+			path = HubPlayer;
+			sourceTree = "<group>";
+		};
+		9cf43b31e8845d861542a38e /* Models */ = {
+			isa = PBXGroup;
+			children = ( 5d8ab5efdad1787ce0ab0163, c2316ff308c4c146438765f1 );
+			path = Models;
+			sourceTree = "<group>";
+		};
+		420ceb417186b52ecf642348 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = ( 97c538b2658cdab62e3cea80 );
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		c454586a1f4e28c340bdc1ad /* Views */ = {
+			isa = PBXGroup;
+			children = ( ccc16142f5012b38810ad9e5, 59ad411a4f68639422344b56, 1018ad4c75a4420be931c440, 543cf9b24532c6acdef1efce, 80737a240070424caadb5495, c3d4e5f60718293a4b5c6d7e, e5f60718293a4b5c6d7e8f91, f60718293a4b5c6d7e8f9a13 );
+			path = Views;
+			sourceTree = "<group>";
+		};
+		7675693986d84f095b28b67d /* Helpers */ = {
+			isa = PBXGroup;
+			children = ( 47a46eb4e5b87bfafb039ed3, 326671a21d35fed08e081415, a1b2c3d4e5f60718293a4b5c );
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		30772f61ac9bdc8631745269 /* Products */ = {
+			isa = PBXGroup;
+			children = ( cab4d8786fdf795b6e46ac92 /* HubPlayer.app */ );
+			name = Products;
+			sourceTree = "<group>";
+		};
+		d8bd5dd42310cb1693158d7b /* Frameworks */ = {
+			isa = PBXGroup;
+			children = ( );
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		e00000000000000000000ab1 /* TVBox */ = {
+			isa = PBXGroup;
+			children = ( c010000000000000000000ab1, c020000000000000000000ab1, c030000000000000000000ab1, c040000000000000000000ab1, c050000000000000000000ab1, c060000000000000000000ab1 );
+			path = TVBox;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7337e351b65b58e3ecbacfcd /* HubPlayer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2857f3da31a2e77d5f204763 /* Build configuration list for PBXNativeTarget "HubPlayer" */;
+			buildPhases = ( 65fa6119905e087a5e53253d /* Sources */, 7997a58cb6f97dd5ffde7900 /* Resources */ );
+			buildRules = ( );
+			dependencies = ( );
+			name = HubPlayer;
+			productName = HubPlayer;
+			productReference = cab4d8786fdf795b6e46ac92 /* HubPlayer.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0747348aba4dbb245a962507 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					7337e351b65b58e3ecbacfcd = { CreatedOnToolsVersion = 15.0; };
+				};
+			};
+			buildConfigurationList = fe422e61ae992d05bc2e14c2 /* Build configuration list for PBXProject "HubPlayer" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = ( en, Base, "zh-Hans" );
+			mainGroup = 71d2e56247fe75c3dce9b609;
+			productRefGroup = 30772f61ac9bdc8631745269 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = ( 7337e351b65b58e3ecbacfcd /* HubPlayer */ );
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		65fa6119905e087a5e53253d /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = ( 18c5c0b9511ab079774c3de9, 138808d1b5602ac1f42140c9, e01812badb7efaec5f4b1828, 5979ec868188a68d32fa0370, de469d8390a8d5c03f2c69d0, 12768178f2ed5f0709f95f4c, a57b7827ed74a3d9d7da18d0, 96b39969ed2202fbc8c64be1, 1b4c28d28af34d738f0df072, 1519d298d814f7680b3c4ee5, 0c1112546e59e5a2374c9c7d, c1c28a1186aeb7aafba40560, b2c3d4e5f60718293a4b5c6d, d4e5f60718293a4b5c6d7e8f, e6f60718293a4b5c6d7e8f92, f70818293a4b5c6d7e8f9a14, d010000000000000000000cd2, d020000000000000000000cd2, d030000000000000000000cd2, d040000000000000000000cd2, d050000000000000000000cd2, d060000000000000000000cd2 );
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7997a58cb6f97dd5ffde7900 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = ( 3d61738cf881fac649b33772 /* Assets.xcassets in Resources */ );
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		8075f60415069c2bcb23ffd1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ( "DEBUG=1", "$(inherited)" );
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		63a23cadc2db422e378cb61e /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		567636c4601008f29b6c5edf /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = HubPlayer/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = ( "$(inherited)", "@executable_path/Frameworks" );
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hub.player;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		26fc3b14798f68fced7fa6bb /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = HubPlayer/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = ( "$(inherited)", "@executable_path/Frameworks" );
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hub.player;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		fe422e61ae992d05bc2e14c2 /* Build configuration list for PBXProject "HubPlayer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = ( 8075f60415069c2bcb23ffd1 /* Debug */, 63a23cadc2db422e378cb61e /* Release */ );
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2857f3da31a2e77d5f204763 /* Build configuration list for PBXNativeTarget "HubPlayer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = ( 567636c4601008f29b6c5edf /* Debug */, 26fc3b14798f68fced7fa6bb /* Release */ );
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0747348aba4dbb245a962507 /* Project object */;
+}
