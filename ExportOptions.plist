@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0">
+<dict>
+    <!-- 签名方式：automatic = Xcode 自动管理证书（需已登录 Apple ID） -->
+    <key>signingStyle</key>
+    <string>automatic</string>
+
+    <!-- 分发方式：development（个人开发者真机调试）/ ad-hoc（无需 App Store）/ app-store -->
+    <!-- 自己手机装：用 development 或 ad-hoc 均可 -->
+    <key>method</key>
+    <string>development</string>
+
+    <!-- 把 YOUR_TEAM_ID 换成你自己的 10 位 Team ID（Xcode 账户页可见） -->
+    <key>teamId</key>
+    <string>YOUR_TEAM_ID</string>
+
+    <!-- 不上传符号、不编译 bitcode（加快导出） -->
+    <key>uploadSymbols</key>
+    <false/>
+    <key>compileBitcode</key>
+    <false/>
+    <key>stripSwiftSymbols</key>
+    <true/>
+</dict>
+</plist>
