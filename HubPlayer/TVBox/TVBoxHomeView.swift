@@ -106,7 +106,7 @@ struct TVBoxHomeView: View {
 
                 if store.vods.isEmpty && !store.isLoading {
                     ContentUnavailableFallback(title: "暂无内容",
-                                               subtitle: "到「设置」添加 CMS / 直链站点，或检查配置地址")
+                                               subtitle: "csp_ 是安卓 DEX 插件，单机版无法执行。到「设置」添加 CMS / JSON 站点，或载入演示站点验证播放链路")
                         .frame(minHeight: 240)
                 } else {
                     LazyVGrid(columns: columns, spacing: 14) {
@@ -178,7 +178,7 @@ struct TVBoxHomeView: View {
                             }
                             Spacer()
                             if site.isCsp {
-                                Text("占位")
+                                Text("需安卓 DEX · 不可点播")
                                     .font(.caption2).foregroundStyle(.orange)
                                     .padding(.horizontal, 6).padding(.vertical, 2)
                                     .background(Color.orange.opacity(0.12), in: Capsule())
