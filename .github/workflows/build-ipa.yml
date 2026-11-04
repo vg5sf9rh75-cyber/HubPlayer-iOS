@@ -1,0 +1,172 @@
+name: Build iOS IPA
+
+on:
+  workflow_dispatch:
+    inputs:
+      method:
+        description: "导出方式：development / ad-hoc / app-store"
+        required: true
+        default: "development"
+        type: choice
+        options:
+          - development
+          - ad-hoc
+          - app-store
+  push:
+    branches: [main, master]
+
+concurrency:
+  group: ios-ipa-build
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Archive & Export IPA (macOS)
+    runs-on: macos-latest
+    env:
+      TEAM_ID: ${{ secrets.TEAM_ID }}
+      HAS_P12: ${{ secrets.P12_BASE64 != '' }}
+      HAS_PROFILE: ${{ secrets.PROVISIONING_PROFILE_BASE64 != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      # ---- 仅在提供了签名密钥时导入证书与描述文件 ----
+      - name: Install signing certificate & provisioning profile
+        if: ${{ env.HAS_P12 == 'true' && env.HAS_PROFILE == 'true' && env.TEAM_ID != '' }}
+        env:
+          P12_BASE64: ${{ secrets.P12_BASE64 }}
+          PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
+          CERT_PASSWORD: ${{ secrets.CERT_PASSWORD }}
+        run: |
+          set -e
+          KEYCHAIN="$RUNNER_TEMP/signing.keychain-db"
+          KEYCHAIN_PASSWORD="ci-temp-password"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+
+          echo -n "$P12_BASE64" | base64 -d > "$RUNNER_TEMP/cert.p12"
+          security import "$RUNNER_TEMP/cert.p12" -P "$CERT_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN"
+
+          security list-keychains -d user -s "$KEYCHAIN" login.keychain-db
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          PROFILE_PATH="$HOME/Library/MobileDevice/Provisioning Profiles/ci.mobileprovision"
+          echo -n "$PROFILE_BASE64" | base64 -d > "$PROFILE_PATH"
+
+          PROFILE_NAME=$(security cms -D -i "$PROFILE_PATH" 2>/dev/null | plutil -extract Name raw -)
+          echo "PROFILE_NAME=$PROFILE_NAME" >> "$GITHUB_ENV"
+          echo "Imported profile: $PROFILE_NAME"
+
+      # ---- Archive（有签名则手动签名，否则仅编译验证，不做签名）----
+      - name: Archive
+        run: |
+          set -e
+          if [ -n "$TEAM_ID" ] && [ -n "$PROFILE_NAME" ]; then
+            echo ">> 使用手动签名 Archive"
+            xcodebuild -project HubPlayer.xcodeproj -scheme HubPlayer \
+              -configuration Release \
+              -archivePath build/HubPlayer.xcarchive \
+              CODE_SIGN_STYLE=Manual \
+              DEVELOPMENT_TEAM="$TEAM_ID" \
+              PROVISIONING_PROFILE_SPECIFIER="$PROFILE_NAME" \
+              clean archive
+          else
+            echo ">> 未提供签名密钥：不签名编译，稍后打包为未签名 IPA（供 Sideloadly/AltStore 重签）"
+            xcodebuild -project HubPlayer.xcodeproj -scheme HubPlayer \
+              -configuration Release \
+              -archivePath build/HubPlayer.xcarchive \
+              CODE_SIGN_IDENTITY="" \
+              CODE_SIGNING_ALLOWED=NO \
+              clean archive
+          fi
+
+      # ---- 导出 IPA（仅签名时）----
+      - name: Export IPA
+        if: ${{ env.HAS_P12 == 'true' && env.TEAM_ID != '' }}
+        env:
+          METHOD: ${{ github.event.inputs.method }}
+        run: |
+          set -e
+          [ -z "$METHOD" ] && METHOD="development"
+          cat > ExportOptions.plist <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>method</key>
+            <string>$METHOD</string>
+            <key>teamId</key>
+            <string>$TEAM_ID</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.hub.player</key>
+              <string>${PROFILE_NAME}</string>
+            </dict>
+            <key>uploadSymbols</key>
+            <false/>
+            <key>compileBitcode</key>
+            <false/>
+            <key>stripSwiftSymbols</key>
+            <true/>
+          </dict>
+          </plist>
+          PLIST
+          xcodebuild -exportArchive \
+            -archivePath build/HubPlayer.xcarchive \
+            -exportOptionsPlist ExportOptions.plist \
+            -exportPath build/ipa
+
+      # ---- 未签名路径：打包 Payload/ 为 IPA，供 Sideloadly / AltStore 现场重签安装 ----
+      - name: Package unsigned IPA
+        if: ${{ env.HAS_P12 != 'true' || env.TEAM_ID == '' }}
+        run: |
+          set -e
+          mkdir -p build/ipa/Payload
+          cp -R build/HubPlayer.xcarchive/Products/Applications/HubPlayer.app build/ipa/Payload/
+          cd build/ipa
+          zip -qry HubPlayer-unsigned.ipa Payload
+          echo ">> 未签名 IPA 已打包（用 Sideloadly/AltStore 重签后安装）"
+
+      # ---- 回传保险通道：把 IPA 直接提交到 ipa-delivery 分支 ----
+      # （部分网络环境下 artifact 下载域名被墙，走仓库分支最稳）
+      - name: Publish IPA to ipa-delivery branch
+        if: always()
+        run: |
+          set -e
+          IPA=$(ls build/ipa/HubPlayer*.ipa 2>/dev/null | head -1 || true)
+          if [ -z "$IPA" ]; then echo "No IPA produced; skip"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -rf "$RUNNER_TEMP/delivery"
+          git worktree add --orphan -b ipa-delivery "$RUNNER_TEMP/delivery"
+          cp "$IPA" "$RUNNER_TEMP/delivery/HubPlayer.ipa"
+          cd "$RUNNER_TEMP/delivery"
+          git add HubPlayer.ipa
+          git commit -m "IPA build from ${GITHUB_SHA::7}"
+          git push -f origin ipa-delivery
+          echo ">> IPA 已推送到 ipa-delivery 分支"
+
+      # ---- 上传产物 ----
+      - name: Upload IPA
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HubPlayer.ipa
+          path: build/ipa/HubPlayer*.ipa
+          if-no-files-found: warn
