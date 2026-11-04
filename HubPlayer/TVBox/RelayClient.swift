@@ -107,6 +107,11 @@ final class RelayClient {
 
     func callSpider(api: String, ext: String = "", method: String,
                     args: [String: Any] = [:]) async throws -> String {
+        // 0) 内置演示站点：离线验证「首页 → 详情 → 选集 → 播放」整条链路
+        if api == "hub://demo" {
+            return demoResponse(method: method, args: args)
+        }
+
         // 1) DEX 插件站点只作占位；若 ext 直接指向可直读的 JSON 则仍可展示
         if api.hasPrefix("csp_") {
             if (method == "homeContent" || method == "categoryContent"),
@@ -118,10 +123,9 @@ final class RelayClient {
                 "「\(api)」是安卓 DEX 插件站点，单机版不内置 DEX 运行时。请到「设置 → 自定义站点」添加 CMS / 直链接口后使用。")
         }
 
-        // 2) 播放：选集值一般就是直链，直接返回给 resolvePlay
+        // 2) 播放：把选集值规范化成 CMS 标准 play 结果
         if method == "playerContent" {
-            let id = args["id"] as? String ?? ""
-            return "{\"url\":\(quoted(id)),\"parse\":0,\"header\":{}}"
+            return try playerResult(value: args["id"] as? String ?? "", ext: ext, api: api)
         }
 
         // 3) 可直连的采集接口
@@ -310,10 +314,91 @@ final class RelayClient {
         return text.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    // MARK: - 播放地址规范化
+
+    /// 选集值 → CMS 标准 play 结果。
+    /// 兼容「名称$地址」「$$$ 多线路」「片段内 #」「相对路径」，并标出是否需要解析接口。
+    private func playerResult(value raw: String, ext: String, api: String) throws -> String {
+        var v = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        if v.isEmpty { throw RelayError.decode("选集地址为空，源站未返回播放地址") }
+        if let sep = v.range(of: "$$$") { v = String(v[..<sep.lowerBound]) }
+        if let dollar = v.range(of: "$") { v = String(v[dollar.upperBound...]) }
+        if let hash = v.range(of: "#"), !v.lowercased().hasPrefix("http") {
+            v = String(v[hash.upperBound...])
+        }
+        v = v.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        var target = v
+        if !isPlayableURL(v),
+           let baseStr = firstHTTPURL(in: ext) ?? firstHTTPURL(in: api),
+           let baseURL = URL(string: baseStr),
+           let u = URL(string: v, relativeTo: baseURL) {
+            target = u.absoluteString
+        }
+
+        let direct = isPlayableURL(target)
+        let obj: [String: Any] = [
+            "url": target,
+            "parse": direct ? 0 : 1,
+            "jx": direct ? 0 : 1,
+            "header": [:],
+            "contentType": ""
+        ]
+        guard let d = try? JSONSerialization.data(withJSONObject: obj, options: []),
+              let s = String(data: d, encoding: .utf8) else {
+            throw RelayError.decode("播放结果生成失败")
+        }
+        return s
+    }
+
+    private func isPlayableURL(_ s: String) -> Bool {
+        let t = s.lowercased()
+        return t.hasPrefix("http://") || t.hasPrefix("https://")
+            || t.hasPrefix("rtmp://") || t.hasPrefix("rtsp://")
+    }
+
+    // MARK: - 内置演示站点（离线验证播放链路，可随时删除）
+
+    private func demoResponse(method: String, args: [String: Any]) -> String {
+        let apple = "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8"
+        let mux = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+        func item(_ id: String, _ name: String, _ url: String, _ note: String) -> [String: Any] {
+            ["vod_id": id, "vod_name": name, "vod_pic": "", "vod_remarks": "可直接播放",
+             "vod_year": "2026", "vod_area": "演示", "type_name": "测试线路",
+             "vod_actor": "", "vod_director": "", "vod_content": note,
+             "vod_play_from": "直连", "vod_play_url": "第1集$" + url]
+        }
+        let all = [
+            item("1", "演示 · Apple HLS", apple, "Apple 官方公开 HLS 测试流。能出画面说明本机播放链路正常，问题只在配置源。"),
+            item("2", "演示 · Mux HLS", mux, "Mux 公开多码率测试流。")
+        ]
+        var list = all
+        switch method {
+        case "searchContent":
+            let k = (args["key"] as? String ?? "").lowercased()
+            if !k.isEmpty {
+                list = all.filter { ($0["vod_name"] as? String ?? "").lowercased().contains(k) }
+            }
+        case "detailContent":
+            let ids = args["ids"] as? [String] ?? []
+            list = all.filter { ids.contains($0["vod_id"] as? String ?? "") }
+        default:
+            break
+        }
+        let obj: [String: Any] = [
+            "list": list,
+            "class": [["type_id": "1", "type_name": "演示"]],
+            "page": 1, "pagecount": 1, "total": list.count, "code": 1
+        ]
+        guard let d = try? JSONSerialization.data(withJSONObject: obj, options: []),
+              let s = String(data: d, encoding: .utf8) else { return "{\"list\":[]}" }
+        return s
+    }
+
     // MARK: - 小工具
 
     private func quoted(_ s: String) -> String {
-        guard let d = try? JSONEncoder().encode(s),
+        guard let d = try? JSONSerialization.data(withJSONObject: s, options: .fragmentsAllowed),
               let q = String(data: d, encoding: .utf8) else { return "\"\"" }
         return q
     }
